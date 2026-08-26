@@ -44,15 +44,25 @@ public class ShowSeat {
         return status;
     }
 
-    public void setStatus(ShowSeatStatus status) {
-        this.status = status;
-    }
-
     public int getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
-        this.price = price;
+    public void hold(){
+        if(this.status != ShowSeatStatus.AVAILABLE){
+            throw new IllegalStateException("The seat is not available");
+        }
+        this.status = ShowSeatStatus.HELD;
+    }
+
+    public void confirm(){
+        if(this.status != ShowSeatStatus.HELD){
+            throw new IllegalStateException("The seat cannot be booked");
+        }
+        this.status = ShowSeatStatus.BOOKED;
+    }
+
+    public void release(){
+        this.status = ShowSeatStatus.AVAILABLE;
     }
 }

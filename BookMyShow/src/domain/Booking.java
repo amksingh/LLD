@@ -10,11 +10,11 @@ public class Booking {
     private BookingStatus status;
     private int amount;
 
-    public Booking(int id, User user, List<ShowSeat> showSeatList, int amount) {
+    public Booking(int id, User user, List<ShowSeat> showSeatList) {
         this.id = id;
         this.user = user;
         this.showSeatList = showSeatList;
-        this.amount = amount;
+        this.amount = calculateAmount();
         this.status = BookingStatus.PENDING;
     }
 
@@ -54,7 +54,11 @@ public class Booking {
         return amount;
     }
 
-    public void setAmount(int amount) {
-        this.amount = amount;
+    public int calculateAmount(){
+        int amount = 0;
+        for(ShowSeat seat : showSeatList){
+            amount += seat.getPrice();
+        }
+        return amount;
     }
 }

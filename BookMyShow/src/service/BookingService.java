@@ -7,6 +7,8 @@ import domain.User;
 import repository.BookingRepository;
 import repository.ShowSeatRepository;
 
+import java.util.List;
+
 public class BookingService {
 
     private BookingRepository bookingRepository;
@@ -17,7 +19,18 @@ public class BookingService {
         this.showSeatRepository = showSeatRepository;
     }
 
-    public Booking bookTicket(User user, Show show, ShowSeat showSeat){
-        return null;
+    public Booking bookTicket(User user, Show show, List<ShowSeat> showSeats){
+        if(!showSeatRepository.checkSeatAreAvailableOrNot(show.getId(), showSeats)){
+            throw new RuntimeException("Selected seats are not availabe" +
+                    "could not complete booking");
+        }
+        for(ShowSeat seat : showSeats){
+            seat.hold();
+        }
+        Booking booking = new Booking(0, user, showSeats);
+        int amount = booking.getAmount();
+
+        booking = bookingRepository.save(booking);
+        return booking;
     }
 }
