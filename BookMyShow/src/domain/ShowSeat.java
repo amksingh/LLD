@@ -1,5 +1,7 @@
 package domain;
 
+import java.time.LocalDateTime;
+
 public class ShowSeat {
 
     private int id;
@@ -7,6 +9,7 @@ public class ShowSeat {
     private Show show;
     private ShowSeatStatus status;
     private int price;
+    private LocalDateTime holdExpiredAt;
 
     public ShowSeat(int id, Seat seat, Show show, ShowSeatStatus status, int price) {
         this.id = id;
@@ -53,6 +56,7 @@ public class ShowSeat {
             throw new IllegalStateException("The seat is not available");
         }
         this.status = ShowSeatStatus.HELD;
+        this.holdExpiredAt = LocalDateTime.now().plusMinutes(5);
     }
 
     public void confirm(){
@@ -71,5 +75,9 @@ public class ShowSeat {
 
     public  boolean isAvailable(){
         return this.status == ShowSeatStatus.AVAILABLE;
+    }
+
+    public boolean isHoldExpired(){
+        return holdExpiredAt.isBefore(LocalDateTime.now()) && this.status == ShowSeatStatus.HELD;
     }
 }

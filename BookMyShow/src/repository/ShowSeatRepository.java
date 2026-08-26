@@ -30,6 +30,9 @@ public class ShowSeatRepository {
         }
         for(ShowSeat seats : showSeats){
             ShowSeat storedSeat = map.get(id).get(seats.getSeat().getId());
+            if(storedSeat == null){
+                throw new RuntimeException("Invalid seat selected");
+            }
             storedSeat.hold();
         }
         return true;
