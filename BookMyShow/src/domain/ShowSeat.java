@@ -64,7 +64,7 @@ public class ShowSeat {
 
     public void release(){
         if(this.status != ShowSeatStatus.HELD){
-            throw new IllegalStateException("The seat cannot be booked");
+            throw new IllegalStateException("Only the held seat can be released");
         }
         this.status = ShowSeatStatus.AVAILABLE;
     }

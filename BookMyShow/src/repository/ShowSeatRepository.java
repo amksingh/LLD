@@ -29,7 +29,8 @@ public class ShowSeatRepository {
             return false;
         }
         for(ShowSeat seats : showSeats){
-            seats.hold();
+            ShowSeat storedSeat = map.get(id).get(seats.getSeat().getId());
+            storedSeat.hold();
         }
         return true;
     }
