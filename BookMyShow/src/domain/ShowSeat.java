@@ -63,6 +63,13 @@ public class ShowSeat {
     }
 
     public void release(){
+        if(this.status != ShowSeatStatus.HELD){
+            throw new IllegalStateException("The seat cannot be booked");
+        }
         this.status = ShowSeatStatus.AVAILABLE;
+    }
+
+    public  boolean isAvailable(){
+        return this.status == ShowSeatStatus.AVAILABLE;
     }
 }

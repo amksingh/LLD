@@ -1,5 +1,6 @@
 package repository;
 
+import domain.Show;
 import domain.ShowSeat;
 import domain.ShowSeatStatus;
 
@@ -11,18 +12,25 @@ public class ShowSeatRepository {
 
    Map<Integer, Map<Integer, ShowSeat>> map = new HashMap<>();
 
-    public boolean checkSeatAreAvailableOrNot(int showId, List<ShowSeat> showSeats){
-        Map<Integer, ShowSeat> seatMap = map.get(showId);
-        if(seatMap == null || seatMap.size() == 0){
+    public  synchronized  boolean reserveSeats(int id, List<ShowSeat> showSeats) {
+        if(!map.containsKey(id)){
+            System.out.println("The particular show is not present");
             return false;
         }
+        Map<Integer, ShowSeat> list = map.get(id);
+        boolean isAvailable = true;
         for(ShowSeat seat : showSeats){
-            if(!seatMap.containsKey(seat.getId()) ||
-                    seatMap.get(seat.getId()).getStatus() != ShowSeatStatus.AVAILABLE){
-                return false;
+            if(!list.get(seat.getSeat().getId()).isAvailable()){
+                isAvailable = false;
+                break;
             }
         }
+        if(!isAvailable){
+            return false;
+        }
+        for(ShowSeat seats : showSeats){
+            seats.hold();
+        }
         return true;
-
     }
 }

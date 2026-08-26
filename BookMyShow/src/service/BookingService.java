@@ -20,12 +20,9 @@ public class BookingService {
     }
 
     public Booking bookTicket(User user, Show show, List<ShowSeat> showSeats){
-        if(!showSeatRepository.checkSeatAreAvailableOrNot(show.getId(), showSeats)){
-            throw new RuntimeException("Selected seats are not availabe" +
-                    "could not complete booking");
-        }
-        for(ShowSeat seat : showSeats){
-            seat.hold();
+        boolean reserved = showSeatRepository.reserveSeats(show.getId(), showSeats);
+        if(!reserved){
+            throw new IllegalStateException("One or more seat are not available");
         }
         Booking booking = new Booking(0, user, showSeats);
         int amount = booking.getAmount();
