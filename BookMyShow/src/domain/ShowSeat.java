@@ -59,14 +59,14 @@ public class ShowSeat {
         this.holdExpiredAt = LocalDateTime.now().plusMinutes(5);
     }
 
-    public void confirm(){
+    public synchronized  void confirm(){
         if(this.status != ShowSeatStatus.HELD){
             throw new IllegalStateException("The seat cannot be booked");
         }
         this.status = ShowSeatStatus.BOOKED;
     }
 
-    public void release(){
+    public synchronized  void release(){
         if(this.status != ShowSeatStatus.HELD){
             throw new IllegalStateException("Only the held seat can be released");
         }
@@ -78,6 +78,6 @@ public class ShowSeat {
     }
 
     public boolean isHoldExpired(){
-        return holdExpiredAt.isBefore(LocalDateTime.now()) && this.status == ShowSeatStatus.HELD;
+        return holdExpiredAt != null && holdExpiredAt.isBefore(LocalDateTime.now()) && this.status == ShowSeatStatus.HELD;
     }
 }

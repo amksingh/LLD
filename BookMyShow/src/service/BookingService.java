@@ -8,6 +8,7 @@ import repository.BookingRepository;
 import repository.ShowSeatRepository;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class BookingService {
 
@@ -26,8 +27,12 @@ public class BookingService {
         }
         Booking booking = new Booking(0, user, showSeats);
         int amount = booking.getAmount();
-
-        booking = bookingRepository.save(booking);
-        return booking;
+        try {
+            booking = bookingRepository.save(booking);
+            return booking;
+        }catch (Exception e){
+            showSeatRepository.releaseSeats(show.getId(), showSeats);
+            throw e;
+        }
     }
 }
