@@ -63,6 +63,9 @@ public class ShowSeat {
         if(this.status != ShowSeatStatus.HELD){
             throw new IllegalStateException("The seat cannot be booked");
         }
+        if(isHoldExpired()){
+            throw new IllegalStateException("The seat has been expired");
+        }
         this.status = ShowSeatStatus.BOOKED;
     }
 
