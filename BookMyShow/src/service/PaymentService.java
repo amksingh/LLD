@@ -1,5 +1,6 @@
 package service;
 
+import domain.Payment;
 import domain.PaymentStatus;
 import domain.PaymentStrategy;
 
@@ -12,8 +13,8 @@ public class PaymentService {
         this.paymentStrategy = paymentStrategy;
     }
 
-    public PaymentStatus pay(int amount){
-        paymentStrategy.pay(amount);
-        return  PaymentStatus.COMPLETED;
+    public PaymentStatus pay(Payment payment){
+        return paymentStrategy.pay(payment);
+
     }
 }

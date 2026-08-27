@@ -2,5 +2,5 @@ package domain;
 
 public interface PaymentStrategy {
 
-    public void pay(int amount);
+    public PaymentStatus pay(Payment payment);
 }
