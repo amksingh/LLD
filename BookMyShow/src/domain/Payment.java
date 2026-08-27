@@ -1,5 +1,7 @@
 package domain;
 
+import javax.swing.text.DefaultEditorKit;
+
 public class Payment {
 
     private int id;
@@ -31,10 +33,12 @@ public class Payment {
     }
 
     public  void complete(){
-        this.status = PaymentStatus.COMPLETED;
+        if(this.status == PaymentStatus.PENDING)
+            this.status = PaymentStatus.COMPLETED;
     }
 
     public void failed(){
-        this.status = PaymentStatus.FAILED;
+        if(this.status == PaymentStatus.PENDING)
+            this.status = PaymentStatus.FAILED;
     }
 }
