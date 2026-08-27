@@ -1,10 +1,8 @@
 package service;
 
-import domain.Booking;
-import domain.Show;
-import domain.ShowSeat;
-import domain.User;
+import domain.*;
 import repository.BookingRepository;
+import repository.PaymentRepository;
 import repository.ShowSeatRepository;
 
 import java.util.List;
@@ -14,6 +12,8 @@ public class BookingService {
 
     private BookingRepository bookingRepository;
     private ShowSeatRepository showSeatRepository;
+    private PaymentService paymentService;
+    private PaymentRepository paymentRepository;
 
     public BookingService(BookingRepository bookingRepository, ShowSeatRepository showSeatRepository) {
         this.bookingRepository = bookingRepository;
@@ -26,10 +26,20 @@ public class BookingService {
             throw new IllegalStateException("One or more seat are not available");
         }
         Booking booking = new Booking(0, user, showSeats);
+        booking.processing();
         int amount = booking.getAmount();
         try {
-            booking = bookingRepository.save(booking);
-            return booking;
+            Payment payment = new Payment(0, booking.getId(), amount);
+            PaymentStatus status = paymentService.pay(payment);
+            if(status == PaymentStatus.COMPLETED){
+                booking.completed();
+                bookingRepository.save(booking);
+                paymentRepository.save(payment);
+                return  booking;
+            }else{
+                throw new IllegalStateException("Payment to the booking got failed");
+            }
+
         }catch (Exception e){
             showSeatRepository.releaseSeats(show.getId(), showSeats);
             throw e;

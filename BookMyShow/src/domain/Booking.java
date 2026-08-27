@@ -61,4 +61,16 @@ public class Booking {
         }
         return amount;
     }
+
+    public void processing(){
+        this.status = BookingStatus.PROCESSING;
+    }
+
+    public void completed(){
+        this.status = BookingStatus.COMPLETED;
+    }
+
+    public void failed(){
+        this.status = BookingStatus.FAILED;
+    }
 }

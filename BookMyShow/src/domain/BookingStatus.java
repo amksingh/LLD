@@ -1,5 +1,5 @@
 package domain;
 
 public enum BookingStatus {
-    PENDING, COMPLETED, FAILED
+    PENDING, COMPLETED, FAILED, PROCESSING
 }
