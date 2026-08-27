@@ -13,6 +13,11 @@ public class ShowSeatRepository {
 
    Map<Integer, Map<Integer, ShowSeat>> map = new HashMap<>();
 
+    public  void save(Show show, ShowSeat seat) {
+        Map<Integer, ShowSeat> m = map.get(show.getId());
+        m.put(seat.getSeat().getId(), seat);
+    }
+
     public  synchronized  boolean reserveSeats(int id, List<ShowSeat> showSeats) {
         if(!map.containsKey(id)){
             System.out.println("The particular show is not present");

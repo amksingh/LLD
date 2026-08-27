@@ -29,14 +29,21 @@ public class BookingService {
         booking.processing();
         int amount = booking.getAmount();
         try {
+            bookingRepository.save(booking);
             Payment payment = new Payment(0, booking.getId(), amount);
             PaymentStatus status = paymentService.pay(payment);
             if(status == PaymentStatus.COMPLETED){
                 booking.completed();
                 bookingRepository.save(booking);
                 paymentRepository.save(payment);
+                for(ShowSeat seat : showSeats){
+                    seat.confirm();
+                    showSeatRepository.save(show, seat);
+                }
                 return  booking;
             }else{
+                booking.failed();
+                bookingRepository.save(booking);
                 throw new IllegalStateException("Payment to the booking got failed");
             }
 
