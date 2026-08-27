@@ -29,4 +29,12 @@ public class Payment {
     public int getAmount() {
         return amount;
     }
+
+    public  void complete(){
+        this.status = PaymentStatus.COMPLETED;
+    }
+
+    public void failed(){
+        this.status = PaymentStatus.FAILED;
+    }
 }

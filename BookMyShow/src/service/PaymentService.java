@@ -14,7 +14,12 @@ public class PaymentService {
     }
 
     public PaymentStatus pay(Payment payment){
-        return paymentStrategy.pay(payment);
-
+        PaymentStatus status = paymentStrategy.pay(payment);
+        if(status == PaymentStatus.COMPLETED){
+            payment.complete();
+        }else{
+            payment.failed();
+        }
+        return status;
     }
 }
