@@ -1,0 +1,71 @@
+New LLD Problem: Elevator System
+
+Assume you've never designed it before.
+
+Interview prompt
+
+Design an Elevator System for a building.
+
+The building has multiple floors and multiple elevators.
+
+The system should allow:
+
+A user to request an elevator from a floor.
+A user inside an elevator to select a destination floor.
+Multiple elevators can exist in the building.
+The system should decide which elevator should serve a request.
+Elevator should move between floors.
+Elevator should open and close its doors.
+Elevator should maintain its current floor and direction.
+The system should handle multiple elevator requests.
+
+1. Functional requirements
+
+we have multiple elivators
+user press the button at particular floor
+user press the button from inside to reach desire floor
+if there are different button for different elevator pressed one will come
+if not system to check whcih one to come
+Eleveator move between the floor and automatilcally close and open dorr
+
+2. Entities
+
+Elevator -> id, currentFloor, isActive boolean, direction enum
+Floor -> int number
+Building -> id, name, List<Elevator> elevators, List<Floor>
+Direction enum -> UP, DOWN, IDEL
+ElivatorRequest -> sourceFloor, Direction
+DestinationRequest -> id, destinationFloor
+Request Enum -> pending completed
+
+3. Relationships
+building has floor 1 to many composition
+building has elevator 1 to many association
+ElevaorRequest has direction 1 to 1
+destination has floor Number 1 to 1
+
+4. Entity responsibilities
+
+Elevator
+    processElevatorRequest(ElevatorRequest)
+    processDestinationRequest(DestinationRequest)
+
+ Building
+     markElevatorAcitve()
+     markElevatorInActive()
+
+ElevatorRequest
+    markCompleted()
+    markPending()
+
+ DestiinationRequest
+    markCompleted()
+    markPending()
+5. Interfaces
+6. Design patterns
+7. Services
+8. Repositories (only if actually needed)
+9. Main flow
+10. Edge cases
+11. Concurrency
+12. Code

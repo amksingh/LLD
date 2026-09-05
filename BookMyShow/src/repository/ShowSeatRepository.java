@@ -18,6 +18,32 @@ public class ShowSeatRepository {
         m.put(seat.getSeat().getId(), seat);
     }
 
+    public synchronized  boolean confirmSeats(Show show, List<ShowSeat> showSeats){
+        if(!map.containsKey(show.getId())){
+            System.out.println("The particular show is not present");
+            return false;
+        }
+        Map<Integer, ShowSeat> list = map.get(show.getId());
+        boolean canConfirm = true;
+        for(ShowSeat seat : showSeats){
+            if(list.get(seat.getSeat().getId()).getStatus() != ShowSeatStatus.HELD){
+                canConfirm = false;
+                break;
+            }
+        }
+        if(!canConfirm){
+            return false;
+        }
+        for(ShowSeat seats : showSeats){
+            ShowSeat storedSeat = map.get(show.getId()).get(seats.getSeat().getId());
+            if(storedSeat == null){
+                throw new IllegalArgumentException("Invalid seat selected");
+            }
+            storedSeat.confirm();
+        }
+        return true;
+    }
+
     public  synchronized  boolean reserveSeats(int id, List<ShowSeat> showSeats) {
         if(!map.containsKey(id)){
             System.out.println("The particular show is not present");
@@ -44,7 +70,7 @@ public class ShowSeatRepository {
         return true;
     }
 
-    public void releaseSeats(int id, List<ShowSeat> showSeats) {
+    public synchronized  void releaseSeats(int id, List<ShowSeat> showSeats) {
         for(ShowSeat seats : showSeats) {
             ShowSeat storedSeat = map.get(id).get(seats.getSeat().getId());
             if (storedSeat == null) {

@@ -41,4 +41,10 @@ public class Payment {
         if(this.status == PaymentStatus.PENDING)
             this.status = PaymentStatus.FAILED;
     }
+
+    public void refund(){
+        if(this.status == PaymentStatus.COMPLETED){
+            this.status = PaymentStatus.REFUND;
+        }
+    }
 }

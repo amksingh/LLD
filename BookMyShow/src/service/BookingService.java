@@ -15,9 +15,11 @@ public class BookingService {
     private PaymentService paymentService;
     private PaymentRepository paymentRepository;
 
-    public BookingService(BookingRepository bookingRepository, ShowSeatRepository showSeatRepository) {
+    public BookingService(BookingRepository bookingRepository, ShowSeatRepository showSeatRepository, PaymentService paymentService, PaymentRepository paymentRepository) {
         this.bookingRepository = bookingRepository;
         this.showSeatRepository = showSeatRepository;
+        this.paymentService = paymentService;
+        this.paymentRepository = paymentRepository;
     }
 
     public Booking bookTicket(User user, Show show, List<ShowSeat> showSeats){
@@ -26,25 +28,31 @@ public class BookingService {
             throw new IllegalStateException("One or more seat are not available");
         }
         Booking booking = new Booking(0, user, showSeats);
-        booking.processing();
         int amount = booking.getAmount();
         try {
             bookingRepository.save(booking);
             Payment payment = new Payment(0, booking.getId(), amount);
             PaymentStatus status = paymentService.pay(payment);
+            paymentRepository.save(payment);
             if(status == PaymentStatus.COMPLETED){
+                boolean isConfirmedAll = showSeatRepository.confirmSeats(show, showSeats);
+                if(!isConfirmedAll){
+                    paymentService.refund(payment);
+                    paymentRepository.save(payment);
+                    booking.failed();
+                    bookingRepository.save(booking);
+                    showSeatRepository.releaseSeats(show.getId(), showSeats);
+                    return booking;
+                }
                 booking.completed();
                 bookingRepository.save(booking);
-                paymentRepository.save(payment);
-                for(ShowSeat seat : showSeats){
-                    seat.confirm();
-                    showSeatRepository.save(show, seat);
-                }
+
                 return  booking;
             }else{
                 booking.failed();
                 bookingRepository.save(booking);
-                throw new IllegalStateException("Payment to the booking got failed");
+                showSeatRepository.releaseSeats(show.getId(), showSeats);
+                return booking;
             }
 
         }catch (Exception e){

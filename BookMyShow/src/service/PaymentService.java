@@ -22,4 +22,12 @@ public class PaymentService {
         }
         return status;
     }
+
+    public PaymentStatus refund(Payment payment){
+        PaymentStatus status = paymentStrategy.refund(payment);
+        if(status == PaymentStatus.REFUND){
+            payment.refund();
+        }
+        return status;
+    }
 }
